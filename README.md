@@ -239,5 +239,5 @@ Clearly we are able to realize our RESTful dreams of supporting multiple transpo
 
 We were also able to leverage `Criterion` and `Weigh` to quickly validate our assumptions. Message Pack is fast, it is compact, it is conservative and very appropriate for machine to machine communication. With this medium we can save time encoding, decoding and be thrifty with bytes over the wire. Even though Haskell's Message Pack implementation is much younger than Aeson it is already performing exceptionally.
 
-### Caveats
+### Next Steps
 Our benchmarks in this post were very simple. They serve our purpose of quickly evaluating this medium, but we could do better. Truly robust benchmarks would measure many more circumstances, such as simpler data, more complex data, varrying payload sizes, long vs short lists, etc. I'll leave these types of measurements as an exercise for the reader.
