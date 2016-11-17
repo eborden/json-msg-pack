@@ -1,7 +1,7 @@
 # Haskell, can we REST?
 ## JSON and Message Pack
 
-One of the joys of truly RESTful services is that we can freely speak about resources and respresentations seperately. A robust REST service will observe the [Accepts](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) header. The client requests the content type they want to consume and the server responds with said content or a 406 error.
+One of the joys of truly RESTful services is that we can freely speak about resources and respresentations seperately. A robust REST service will observe the [Accept](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) header. The client requests the content type they want to consume and the server responds with said content or a 406 error.
 
 In Haskell we are lucky to have an ecosystem that often lowers the bar to exposing many content types. The [Aeson](https://hackage.haskell.org/package/aeson) library makes it a joy to both produce and consume [JSON](http://www.json.org/). It is quite fast, but JSON is not always appropriate.
 
@@ -235,7 +235,7 @@ Content-Length: 37
 ```
 
 ## Conclusion
-Clearly we are able to realize our RESTful dreams of supporting multiple transport mediums. `Aeson` and `MessagePack` allow us to leverage generic programming and avoid boilerplate. This makes the cost of multiple mediums low, allowing our services greater utility for cheap. We can now utilize the Accepts header to request the transport medium most appropriate for our use case.
+Clearly we are able to realize our RESTful dreams of supporting multiple transport mediums. `Aeson` and `MessagePack` allow us to leverage generic programming and avoid boilerplate. This makes the cost of multiple mediums low, allowing our services greater utility for cheap. We can now utilize the Accept header to request the transport medium most appropriate for our use case.
 
 We were also able to leverage `Criterion` and `Weigh` to quickly validate our assumptions. Message Pack is fast, it is compact, it is conservative and very appropriate for machine to machine communication. With this medium we can save time encoding, decoding and be thrifty with bytes over the wire. Even though Haskell's Message Pack implementation is much younger than Aeson it is already performing exceptionally.
 
