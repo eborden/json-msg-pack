@@ -201,7 +201,7 @@ payload = do
 ~~~
 
 ## Results
-Lets run it. This README.md is a literate haskell file. You can clone this repo and run this file with [stack](http://haskellstack.org).
+Lets run it. This `README.md` is a literate haskell file. You can clone this repo and run this file with [stack](http://haskellstack.org).
 
 ```
 $ stack build
