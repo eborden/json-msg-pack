@@ -1,9 +1,9 @@
 # Haskell, can we REST?
 ## JSON and Message Pack
 
-One of the joys of truly RESTful services is that we can freely speak about resources and respresentations seperately. A robust REST service will observe the [Accepts](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) header. The client sends the content type they want and the server responds with said content or a 406 error.
+One of the joys of truly RESTful services is that we can freely speak about resources and respresentations seperately. A robust REST service will observe the [Accepts](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) header. The client requests the content type they want to consume and the server responds with said content or a 406 error.
 
-In Haskell we are lucky to have an eccosystem that often lowers the bar to exposing many content types. The [Aeson](https://hackage.haskell.org/package/aeson) library makes it a joy to both produce and consume [JSON](http://www.json.org/). It is quite fast, but JSON is not always appropriate.
+In Haskell we are lucky to have an ecosystem that often lowers the bar to exposing many content types. The [Aeson](https://hackage.haskell.org/package/aeson) library makes it a joy to both produce and consume [JSON](http://www.json.org/). It is quite fast, but JSON is not always appropriate.
 
 ### Service To Service Communication
 Within a service based architecture services often communicate over REST. More often than not they use JSON. However, JSON is intended as a human readable transport. This make it wasteful in many ways. One alternative is [Message Pack](http://msgpack.org/).
@@ -83,7 +83,7 @@ testData = A
 ### Encoding/Decoding
 Previously we defined our data with `deriving (Generic)` utilizing the `DeriveGeneric` language extension. This will allow us to fall back to "generic" versions of functions if a library defines them.
 
-`Data.Aeson` defines default generic implementations for its encoding and decoding. So we only need to declare an instance.
+`Data.Aeson` defines default generic implementations for its encoding and decoding. So we only need to declare an instance of `FromJSON` and `ToJSON`.
 
 ~~~ {.haskell}
 instance Aeson.FromJSON A
@@ -126,6 +126,8 @@ test = do
   assert (Just testData == pickleMsgPck testData) $ pure ()
 ~~~
 
+The Haskell ecosystem has many more robust testing facilities via [`HSpec`](https://hackage.haskell.org/package/hspec), [`QuickCheck`](https://hackage.haskell.org/package/QuickCheck), and many more, but we went with simplicity.
+
 ### Need For Speed
 We'll use our pickle function to check the speed of encoding/decoding, utilizing `Criterion`.
 
@@ -143,7 +145,7 @@ benchmark = do
 
 `defaultMain` will run groups of tests and display their results to the console, we only have one group. `bgroup` defines a group of tests and collects their results, again we only have one.
 
-`bench` defines an actual benchmark. We are using the `nf` function. This function accepts a function to be run, and data to be applied to that function. Its type signature is:
+`bench` defines an actual benchmark. We are using the `nf` function (normal form). This function accepts a function to be run, and data to be applied to that function. Its type signature is:
 
 ```
 nf :: NFData b => (a -> b) -> a -> Benchmarkable
@@ -161,7 +163,7 @@ instance NFData B
 ### Memory Consumption
 Now lets talk memory. Message Pack wouldn't be worth much if it balloons the memory consumption of our server. We want to run on small boxes and we know Aeson can let us do that.
 
-To test this we'll use `Weigh`. Weigh is a robust library, but we have simple needs. We are just testing a function, so we'll use `weightFunc`. This works similarly to `Criterion.bench`. It takes a function to be measured and data to be applied to it. It also has an `NFData` constraint, but we've happily already defined it.
+To test this we'll use `Weigh`. Weigh is a robust library, but we have simple needs. We are just testing a function, so we'll use `weightFunc`. This works similarly to `Criterion.nf`. It takes a function to be measured and data to be applied to it. It also has an `NFData` constraint, but we've happily already defined it.
 
 ~~~ {.haskell}
 weighFunction :: (NFData a, NFData b)
@@ -171,7 +173,7 @@ weighFunction label func dat = do
   (allocations, garbageCollected) <- Weigh.weighFunc func dat
 
   putStrLn $   "Weighing:              " ++ label
-          ++ "\nAllocations Collected: " ++ show allocations
+          ++ "\nAllocations:           " ++ show allocations
           ++ "\nGarbage Collected:     " ++ show garbageCollected
           ++ "\n"
 
@@ -180,7 +182,7 @@ weigh = do
   weighFunction "msgpack" pickleMsgPck testData
 ~~~
 
-Weigh doesn't have standard reporting for `weighFunc`, so we've written a bit of IO to display our results.
+Weigh doesn't have standard reporting for `weighFunc`, so we've written a bit of `IO` with `putStrLn` to display our results.
 
 ### Payload Size
 Message Pack is a binary format, so it should be more compact than JSON. We can prove this by simply encoding our test data and asking for the `length` of the resulting `ByteString`.
@@ -218,11 +220,11 @@ mean                 26.16 μs   (26.11 μs .. 26.23 μs)
 std dev              211.5 ns   (152.3 ns .. 316.2 ns)
 
 Weighing:              aeson
-Allocations Collected: 76904
+Allocations:           76904
 Garbage Collected:     0
 
 Weighing:              msgpack
-Allocations Collected: 61608
+Allocations:           61608
 Garbage Collected:     0
 
 Payload Type:   aeson
@@ -233,4 +235,6 @@ Content-Length: 37
 ```
 
 ## Conclusion
-Message Pack is fast, it is compact, it is conservative and very appropriate for machine to machine communication. Haskell as well makes it perfectly enjoyable to support multiple transport layers with ease.
+Clearly we are able to realize our RESTful dreams of supporting multiple transport mediums. `Aeson` and `MessagePack` allow us to leverage generic programming and avoid boilerplate. This makes the cost of multiple mediums low, allowing our services greater utility for cheap.
+
+We were also able to leverage `Criterion` and `Weigh` to quickly validate our assumptions. Message Pack is fast, it is compact, it is conservative and very appropriate for machine to machine communication. Even though Haskell's Message Pack implementation is much younger than Aeson it is already performing exceptionally.
