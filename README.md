@@ -126,7 +126,7 @@ test = do
   assert (Just testData == pickleMsgPck testData) $ pure ()
 ~~~
 
-The Haskell ecosystem has many more robust testing facilities via [`HSpec`](https://hackage.haskell.org/package/hspec), [`QuickCheck`](https://hackage.haskell.org/package/QuickCheck), and many more, but we went with simplicity.
+The Haskell ecosystem has robust testing facilities via [`HSpec`](https://hackage.haskell.org/package/hspec), [`QuickCheck`](https://hackage.haskell.org/package/QuickCheck), and many more, but we went with simplicity.
 
 ### Need For Speed
 We'll use our pickle function to check the speed of encoding/decoding, utilizing `Criterion`.
