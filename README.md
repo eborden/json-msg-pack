@@ -163,7 +163,7 @@ instance NFData B
 ### Memory Consumption
 Now lets talk memory. Message Pack wouldn't be worth much if it balloons the memory consumption of our server. We want to run on small boxes and we know Aeson can let us do that.
 
-To test this we'll use `Weigh`. Weigh is a robust library, but we have simple needs. We are just testing a function, so we'll use `weightFunc`. This works similarly to `Criterion.nf`. It takes a function to be measured and data to be applied to it. It also has an `NFData` constraint, but we've happily already defined it.
+To test this we'll use `Weigh`. Weigh is a robust library, but we have simple needs. We are just testing a function, so we'll use `weighFunc`. This works similarly to `Criterion.nf`. It takes a function to be measured and data to be applied to it. It also has an `NFData` constraint, but we've happily already defined it.
 
 ~~~ {.haskell}
 weighFunction :: (NFData a, NFData b)
