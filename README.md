@@ -238,3 +238,6 @@ Content-Length: 37
 Clearly we are able to realize our RESTful dreams of supporting multiple transport mediums. `Aeson` and `MessagePack` allow us to leverage generic programming and avoid boilerplate. This makes the cost of multiple mediums low, allowing our services greater utility for cheap. We can now utilize the Accepts header to request the transport medium most appropriate for our use case.
 
 We were also able to leverage `Criterion` and `Weigh` to quickly validate our assumptions. Message Pack is fast, it is compact, it is conservative and very appropriate for machine to machine communication. With this medium we can save time encoding, decoding and be thrifty with bytes over the wire. Even though Haskell's Message Pack implementation is much younger than Aeson it is already performing exceptionally.
+
+### Caveats
+Our benchmarks in this post were very simple. They serve our purpose of quickly evaluating this medium, but we could do better. Truly robust benchmarks would measure many more circumstances, such as simpler data, more complex data, varrying payload sizes, long vs short lists, etc. I'll leave these types of measurements as an exercise for the reader.
