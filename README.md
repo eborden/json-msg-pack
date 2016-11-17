@@ -145,7 +145,7 @@ benchmark = do
 
 `defaultMain` will run groups of tests and display their results to the console, we only have one group. `bgroup` defines a group of tests and collects their results, again we only have one.
 
-`bench` defines an actual benchmark. We are using the `nf` function (normal form). This function accepts a function to be run, and data to be applied to that function. Its type signature is:
+`bench` defines and measures an actual benchmark. We are using the `nf` function (normal form). This function accepts a function to be run, and data to be applied to that function. Its type signature is:
 
 ```
 nf :: NFData b => (a -> b) -> a -> Benchmarkable
