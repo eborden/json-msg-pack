@@ -87,10 +87,12 @@ Previously we defined our data with `deriving (Generic)` utilizing the `DeriveGe
 
 ~~~ {.haskell}
 instance Aeson.FromJSON A
-instance Aeson.ToJSON A
+instance Aeson.ToJSON A where
+  toEncoding = Aeson.genericToEncoding Aeson.defaultOptions
 
 instance Aeson.FromJSON B
-instance Aeson.ToJSON B
+instance Aeson.ToJSON B where
+  toEncoding = Aeson.genericToEncoding Aeson.defaultOptions
 ~~~
 
 Luckily `Data.MessagePack` does too.
